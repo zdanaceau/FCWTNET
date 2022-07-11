@@ -10,7 +10,7 @@ namespace FCWTNET
     /// <summary>
     /// Class to encapsulate the CWT and all relevant parameters
     /// Currently includes:
-    /// CWT Calculation
+    /// CWT Calculations
     /// Separation of real and imaginary components of the CWT
     /// Calculation of the modulus of the CWT
     /// Calculation of the phase of the CWT
