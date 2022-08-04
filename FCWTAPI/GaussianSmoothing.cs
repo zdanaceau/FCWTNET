@@ -84,8 +84,8 @@ namespace FCWTNET
             {
                 throw new ArgumentException("Matrix may not be smaller than the convoluting Gaussian kernel");
             }
-            double[,] kernel = CalculateNormalized1DSampleKernel(deviation); 
             // Calculates the 1D kernel to be used for smoothing
+            double[,] kernel = CalculateNormalized1DSampleKernel(deviation); 
             double[,] dim1Smoothing = new double[inputData.GetLength(0), inputData.GetLength(1)];
             double[,] dim2Smoothing = new double[inputData.GetLength(0), inputData.GetLength(1)];
             // x-direction smoothing
@@ -104,6 +104,23 @@ namespace FCWTNET
             }
             return dim2Smoothing;
         }
+        public static double[] GaussianSmoothing1D(double[] inputData, double deviation)
+        {
+            if (inputData.Length < (deviation * 6 + 1))
+            {
+                throw new ArgumentException("inputData may not be smaller than the convoluting Gaussian kernel", nameof(inputData));
+            }
+            double[,] kernel = CalculateNormalized1DSampleKernel(deviation);
+            double[] smoothedData = new double[inputData.Length];
+            for (int i = 0; i < inputData.GetLength(0); i++)
+            {
+                smoothedData[i] = Process1DPointNoEdgeEffects(inputData, i, kernel);
+            }
+            return smoothedData;
+        }
+
+        
+
         /// <summary>
         /// Method to process each individual point of a given double[,] array 
         /// </summary>
@@ -133,6 +150,44 @@ namespace FCWTNET
                 {
                     processedPoint += matrix[influencePointX, influencePointY] * kernel[i, 0]; 
                    // Sums up the final value of the kernel
+                }
+            }
+            return processedPoint;
+        }
+        private static double Process1DPointNoEdgeEffects(double[] inputData, int x, double[,] kernel)
+        {
+            double processedPoint = 0;
+            int half = kernel.GetLength(0) / 2;
+            double[,] adjustedKernel = new double[kernel.GetLength(0), 1];
+
+            if((x+ half) >= inputData.Length)
+            {
+                int overhang = x + half - inputData.Length;               
+                for (int i = 0; i < kernel.GetLength(0) - overhang; i++)
+                {
+                    adjustedKernel[i, 0] = kernel[i, 0];
+                }
+                adjustedKernel = NormalizeMatrix(adjustedKernel);
+            }
+            else if(x - half < 0)
+            {
+                int overhang = half - x;              
+                for (int i = overhang; i < kernel.GetLength(0); i++)
+                {
+                    adjustedKernel[i, 0] = kernel[i, 0];
+                }
+                adjustedKernel = NormalizeMatrix(adjustedKernel);
+            }
+            else
+            {
+                adjustedKernel = kernel;
+            }
+            for (int i = 0; i < kernel.GetLength(0); i++)
+            {
+                int influencePoint = x + i - half;
+                if (influencePoint >= 0 && influencePoint < inputData.Length)
+                {
+                    processedPoint += inputData[influencePoint] * adjustedKernel[i, 0];
                 }
             }
             return processedPoint;

@@ -193,5 +193,22 @@ namespace TestFCWTAPI
              */
 
         }
+        [Test]
+        public static void TestGaussianSmoothing1D()
+        {
+            double[] invalidArray = {1, 2, 3, 4, 5};
+            Assert.Throws<ArgumentException>(() => GaussianSmoothing.GaussianSmoothing1D(invalidArray, 1));
+            double[] testArray = new double[50];
+            testArray[2] = 1;
+            testArray[20] = 1;
+            testArray[49] = 1;
+            double[] smoothedArray = GaussianSmoothing.GaussianSmoothing1D(testArray, 1);
+            double smoothedArraySum = 0;
+            for (int i = 0; i < smoothedArray.Length; i++)
+            {
+                smoothedArraySum += smoothedArray[i];
+            }
+            Assert.AreEqual(3, smoothedArraySum);
+        }
     }  
 }
