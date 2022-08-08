@@ -44,11 +44,13 @@ namespace TestFCWTAPI
             MyoglobinTestCWT.GenerateHeatMap(CWTObject.CWTFeatures.Modulus, "myoZ13_modulus_Zoomed.pdf", CWTFrequencies.FrequencyUnits.WaveletFrequency, "myo z13", 0.075, 0.095, 2.1, 3);
             MyoglobinTestCWT.GenerateHeatMap(CWTObject.CWTFeatures.Modulus, "myoZ13_modulus_HiZoom.pdf", CWTFrequencies.FrequencyUnits.WaveletFrequency, "myo z13", 0.082, 0.083, 2.4, 2.5);
             MyoglobinTestCWT.GenerateHeatMap(CWTObject.CWTFeatures.Real, "myoZ13_Real.pdf", CWTFrequencies.FrequencyUnits.WaveletFrequency, "myo z13");
-            ComplexTestCWT.GenerateHeatMap(CWTObject.CWTFeatures.Modulus, "complexTransient_modulus.pdf", CWTFrequencies.FrequencyUnits.WaveletFrequency, "complexTransient");
+            ComplexTestCWT.GenerateHeatMap(CWTObject.CWTFeatures.Modulus, "complexTransient_modulus.pdf", CWTFrequencies.FrequencyUnits.WaveletFrequency, "complexTransient", 0.015, 0.14);
             ComplexTestCWT.GenerateHeatMap(CWTObject.CWTFeatures.Modulus, "zoomed_Band2complexTransient_modulus.pdf", CWTFrequencies.FrequencyUnits.WaveletFrequency, "complexTransient", 0.06, 0.08, 19, 30);
             ComplexTestCWT.GenerateHeatMap(CWTObject.CWTFeatures.Modulus, "zoomed_Band1complexTransient_modulus.pdf", CWTFrequencies.FrequencyUnits.WaveletFrequency, "complexTransient", 0.02, 0.04, 19, 30);
-
-
+            ComplexTestCWT.GenerateXYPlot(CWTObject.CWTFeatures.Modulus, "band2xyHighOcilaton.pdf", PlottingUtils.XYPlotOptions.Single, CWTFrequencies.FrequencyUnits.WaveletFrequency,
+                startValue: 22.1, dataName: "complexTransient", startTime: 0.064, endTime: 0.078);
+            ComplexTestCWT.GenerateXYPlot(CWTObject.CWTFeatures.Modulus, "band2xyFasterOscilation.pdf", PlottingUtils.XYPlotOptions.Single, CWTFrequencies.FrequencyUnits.WaveletFrequency,
+                startValue: 22.7, dataName: "complexTransient", startTime: 0.064, endTime: 0.078);
         }
     }
 }
