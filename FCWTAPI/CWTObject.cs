@@ -440,6 +440,46 @@ namespace FCWTNET
             PlottingUtils.ExportPlotPDF(cwtPlot, filePath);
 
         }
-               
+        public void ExportCWTFeature(CWTFeatures cwtFeature, double startTime, double endTime, CWTFrequencies.FrequencyUnits frequencyUnits, 
+            double startFrequency, double endFrequency, string fileName)
+        {
+            double[,] data;
+            switch (cwtFeature)
+            {
+                case CWTFeatures.Imaginary:
+                    data = OutputCWT.ImagArray;
+                    break;
+                case CWTFeatures.Real:
+                    data = OutputCWT.RealArray;
+                    break;
+                case CWTFeatures.Modulus:
+                    data = OutputCWT.ModulusCalculation();
+                    break;
+                default:
+                    data = OutputCWT.PhaseCalculation();
+                    break;
+            }
+            double[,] timeWindowedData;
+            double[] windowedTimeAxis;
+            CWTExtensions.TimeWindowing(startTime, endTime, TimeAxis, data, out windowedTimeAxis, out timeWindowedData);
+            data = timeWindowedData;
+            double[] windowedFrequencyAxis;
+            double[,] freqWindowedData;
+            FrequencyAxis.FrequencyWindowing(startFrequency, endFrequency, FrequencyAxis.WaveletCenterFrequencies, data, 
+                frequencyUnits, out windowedFrequencyAxis, out freqWindowedData);
+            data = freqWindowedData;
+            string filePath = Path.Combine(WorkingPath, fileName);
+            using (StreamWriter csvWriter = new StreamWriter(filePath, false))
+            {
+                for (int i = 0; i < data.GetLength(0); i++)
+                {
+                    for (int j = 0; j < data.GetLength(1); j++)
+                    {
+                        csvWriter.Write("{0},", data[i, j]);
+                    }
+                    csvWriter.WriteLine();
+                }
+            }
+        }
     }
 }
